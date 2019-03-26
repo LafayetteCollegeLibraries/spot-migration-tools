@@ -16,6 +16,7 @@ module SpotMigration
       # @return [Array<SpotMigration::Resolvers::Bitstream>]
       def call(id, _row_metadata = nil)
         @db.exec(bitstream_query, [id])
+           .reject { |result| result['bitstream_description'] == 'Extracted text' }
            .map { |results| bitstream_from_results(results) }
       end
 
@@ -30,6 +31,7 @@ module SpotMigration
             bitstream.name,
             bitstream.bitstream_format_id,
             bitstream.checksum,
+            bitstream.description as bitstream_description,
             bitstream.internal_id,
             format.mimetype,
             format.short_description,

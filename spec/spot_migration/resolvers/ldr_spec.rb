@@ -18,7 +18,10 @@ RSpec.describe SpotMigration::Resolvers::Ldr do
                    .send(:bitstream_query)
   end
   let(:raw_results) do
-    [{ 'name' => 'file.pdf', 'internal_id' => '0123456' }]
+    [
+      { 'name' => 'file.pdf', 'internal_id' => '0123456', 'bitstream_description' => nil },
+      { 'name' => 'file.pdf.txt', 'internal_id' => '0123457', 'bitstream_description' => 'Extracted text' }
+    ]
   end
   let(:asset_base) { '/path/to/assetstore' }
   let(:fake_path) { File.join(asset_base, '01', '23', '45', '0123456') }
