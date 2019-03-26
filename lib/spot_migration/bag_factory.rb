@@ -9,6 +9,7 @@
 #   factory = SpotMigration::BagFactory.new(csv_path: csv_path,
 #                                           file_source: source)
 require 'fileutils'
+require 'tmpdir'
 
 module SpotMigration
   class BagFactory
@@ -29,13 +30,23 @@ module SpotMigration
 
         puts "creating: #{id}"
 
-        bag = BagService.new(id: id, metadata: row, files: files)
-                  .create!(destination: destination)
+        # set up a working directory so we're not in danger
+        # of trying to create bags where they already exist
+        Dir.mktmpdir do |tmpdir|
+          bag = BagService.new(id: id, metadata: row, files: files).create!(destination: tmpdir)
 
-        next unless zip
+          if zip
+            tmp_path = File.join(tmpdir, "#{id}.zip")
+            ZipService.new(src_path: bag.bag_dir).zip!(dest_path: tmp_path)
+            bag_path = tmp_path
+          else
+            bag_path = bag.bag_dir
+          end
 
-        ZipService.new(src_path: bag.bag_dir).zip!(dest_path: "#{bag.bag_dir}.zip")
-        FileUtils.remove_entry(bag.bag_dir)
+          # we'll copy the directory as +Dir.mktmpdir+ will
+          # delete the tmp directory when the block ends
+          FileUtils.cp_r(bag_path, destination)
+        end
       end
     end
 
