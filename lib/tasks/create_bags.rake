@@ -27,8 +27,7 @@ namespace :create_bags do
     asset_base = ENV['asset_base']
     output = ENV['output']
 
-    resolver = ->(id, _row) { File.join(asset_base, id + '.pdf') }
-
+    resolver = SpotMigration::Resolvers::FileSystem.new(asset_base, extension: '.pdf')
     factory = SpotMigration::BagFactory.new(file_resolver: resolver, csv_path: csv_path, id_key: 'File')
     factory.run(destination: output, zip: true)
   end
@@ -38,12 +37,7 @@ namespace :create_bags do
     asset_base = ENV['asset_base']
     output = ENV['output']
 
-    resolver = ->(_id, row) do
-      date = Array(row['dc:date']).first
-      parsed_date = DateTime.parse(date).strftime('%Y_%m_%d')
-      File.join(asset_base, "lafayette_newspaper_#{parsed_date}_OBJ.pdf")
-    end
-
+    resolver = SpotMigration::Resolvers::Newspaper.new(asset_base)
     factory = SpotMigration::BagFactory.new(file_resolver: resolver, csv_path: csv_path)
     factory.run(destination: output, zip: true)
   end
@@ -53,7 +47,7 @@ namespace :create_bags do
     asset_base = ENV['asset_base']
     output = ENV['output']
 
-    resolver = ->(id, _row) { File.join(asset_base, "#{id}.pdf") }
+    resolver = SpotMigration::Resolvers::FileSystem.new(asset_base, extension: '.pdf')
     factory = SpotMigration::BagFactory.new(file_resolver: resolver, csv_path: csv_path, id_key: 'File')
     factory.run(destination: output, zip: true)
   end

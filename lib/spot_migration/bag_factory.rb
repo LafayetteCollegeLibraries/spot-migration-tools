@@ -63,7 +63,8 @@ module SpotMigration
 
     # @return [String]
     def split_character
-      BagService::MULTI_VALUE_SEPARATOR
+      ';'
+      # BagService::MULTI_VALUE_SEPARATOR
     end
   end
 end

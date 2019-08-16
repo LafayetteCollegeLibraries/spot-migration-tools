@@ -9,7 +9,7 @@ module SpotMigration
   class BagService
     attr_reader :id, :metadata, :files
 
-    MULTI_VALUE_SEPARATOR = '|'.freeze
+    MULTI_VALUE_CHARACTER = '|'.freeze
 
     # @param [String] id
     # @param [Hash<* => *>] metadata
@@ -68,7 +68,7 @@ module SpotMigration
       @bag.add_file('metadata.csv') do |io|
         csv = CSV.new(io)
         csv << metadata.keys
-        csv << metadata.values.map { |v| Array(v).join(MULTI_VALUE_SEPARATOR) }
+        csv << metadata.values.map { |v| Array(v).join(MULTI_VALUE_CHARACTER) }
       end
     end
 
