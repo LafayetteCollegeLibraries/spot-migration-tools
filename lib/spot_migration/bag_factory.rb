@@ -25,7 +25,7 @@ module SpotMigration
     # @return [void]
     def run(destination:, zip: false)
       parsed_csv do |row|
-        id = Array(row.delete(@id_key)).first
+        id = Array(row[@id_key]).first
         files = Array(@file_resolver.call(id, row))
 
         puts "creating: #{id}"
