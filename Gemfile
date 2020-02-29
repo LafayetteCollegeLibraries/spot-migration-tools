@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gem 'bagit', '~> 0.4.2'
 gem 'pg', '~> 1.1.3'
-gem 'rake', '~> 12.3.1'
+gem 'rake', '~> 12.3.3'
 gem 'rubyzip', '~> 1.2.2'
 
 group :development, :test do
